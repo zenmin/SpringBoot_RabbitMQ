@@ -1,5 +1,6 @@
 package com.zm.rabbitmq;
 
+import com.zm.rabbitmq.bena.Book;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
@@ -32,10 +33,39 @@ public class RabbitmqApplicationTests {
         HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
         objectObjectHashMap.put("name","zm");
         objectObjectHashMap.put("list", Arrays.asList("1","2","3","4"));
-
+        Book book = new Book();
+        book.setId("1");
+        book.setName("书名1");
+        book.setPrice("12.3");
         //对象被默认序列化
-        rabbitTemplate.convertAndSend("excange.direct","zm.news",objectObjectHashMap);
+        rabbitTemplate.convertAndSend("amqp.exchange","admin.qqq",book);
     }
+
+    /*
+     * 给exchange.fanout交换机下所有队列发送消息
+     */
+    @Test
+    public void sendAll() {
+        Book book = new Book();
+        book.setId("1");
+        book.setName("书名1");
+        book.setPrice("12.3");
+        //对象被默认序列化
+        rabbitTemplate.convertAndSend("exchange.fanout","zm.news",book);
+    }
+    /*
+     * 给exchange.Topic交换机下所有队列  根据规则发送消息
+     */
+    @Test
+    public void sendByTopic() {
+        Book book = new Book();
+        book.setId("1");
+        book.setName("书名1");
+        book.setPrice("12.3");
+        //对象被默认序列化
+        rabbitTemplate.convertAndSend("exchange.topic","xxx.news",book);
+    }
+
     /*
      * 接收消息
      * 默认是使用的java的序列化机制
